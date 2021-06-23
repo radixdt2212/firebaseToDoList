@@ -1,5 +1,5 @@
 import React from "react";
-import { TiDelete } from "react-icons/ti";
+import { RiDeleteBack2Fill } from "react-icons/ri";
 export const Task = ({ item, index, deleteElement }) => {
   return (
     <>
@@ -14,10 +14,13 @@ export const Task = ({ item, index, deleteElement }) => {
 
         <button
           type="button"
-          className="btn btn-circle btn-danger "
+          style={{
+            border: "none",
+            background: "transparent",
+          }}
           onClick={() => deleteElement(index)}
         >
-          <TiDelete size={25} color={"#fff"} />
+          <RiDeleteBack2Fill size={45} color={"#332e2ebc"} />
         </button>
       </li>
     </>

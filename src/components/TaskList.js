@@ -14,7 +14,6 @@ export const TaskList = ({ taskList, deleteElement }) => {
                 {taskList.map((item, index) => {
                   return (
                     <Task
-                      
                       deleteElement={deleteElement}
                       item={item}
                       index={index}

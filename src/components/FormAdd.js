@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { FcTodoList } from "react-icons/fc";
 export const FormAdd = ({
   setTaskValue,
   handleChange,
@@ -13,18 +14,19 @@ export const FormAdd = ({
   return (
     <>
       <form>
-        <div className="container-fluid">
+        <div className="container-fluid ">
           <div
-            className=" card-body card-header my-5 mx-5"
+            className=" card-body card-header my-5 mx-5 shadow rounded"
             style={{ border: "none" }}
           >
             <div className="row no-gutters justify-content-center">
               <div className="col-4 col-offset-8 text-center">
                 <h3
-                  className="btn btn-danger btn-lg w-100 card-body"
+                  className="btn btn-light btn-lg w-100 card-body "
                   style={{ fontWeight: "bold" }}
                 >
-                  ~Add Task~
+                  <FcTodoList size={35} /> <br />
+                  Add Task
                 </h3>
               </div>
               <div className="col-12 mt-3 mb-3">
@@ -50,8 +52,7 @@ export const FormAdd = ({
                   placeholder="Task Description"
                   aria-describedby="inputGroup-sizing-default"
                   style={{ resize: "none" }}
-                  row
-                  no-gutterss="3"
+                  rows="3"
                   value={task}
                   required
                   onChange={setTaskValue}

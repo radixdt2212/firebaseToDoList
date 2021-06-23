@@ -14,6 +14,7 @@ import bootstrap from "bootstrap/dist/js/bootstrap";
 import { FormAdd } from "./components/FormAdd";
 import { TaskList } from "./components/TaskList";
 import { Toasty } from "./components/Toasty";
+import { ListIsEmpty } from "./components/ListIsEmpty";
 
 // Initialize Firebase
 if (firebase.apps.length === 0) {
@@ -174,7 +175,11 @@ function App() {
         dangerClassTask={dangerClassTask}
       />
       <Toasty msg={toastMsg} />
-      <TaskList taskList={taskList} deleteElement={deleteElement} />
+      {taskList ? (
+        <TaskList taskList={taskList} deleteElement={deleteElement} />
+      ) : (
+        <ListIsEmpty />
+      )}
     </>
   );
 }

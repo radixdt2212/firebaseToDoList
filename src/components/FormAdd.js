@@ -20,7 +20,7 @@ export const FormAdd = ({
             style={{ border: "none" }}
           >
             <div className="row no-gutters justify-content-center">
-              <div className="col-4 col-offset-8 text-center">
+              <div className="col-4 text-center">
                 <h3
                   className="btn btn-light btn-lg w-100 card-body "
                   style={{ fontWeight: "bold" }}
@@ -34,10 +34,11 @@ export const FormAdd = ({
                   type="text"
                   className={`form-control ${dangerClassTitle && "is-invalid"}`}
                   aria-label="Sizing example input"
-                  placeholder="Task Title"
+                  placeholder="Task Title (Max 50 Char.)"
                   aria-describedby="inputGroup-sizing-default"
                   value={title}
                   required
+                  maxLength="50"
                   onChange={setDataValue}
                 />
                 <div className="invalid-feedback">
@@ -49,10 +50,11 @@ export const FormAdd = ({
                   type="text"
                   className={`form-control ${dangerClassTask && "is-invalid"}`}
                   aria-label="Sizing example input"
-                  placeholder="Task Description"
+                  placeholder="Task Description (Max 100 Char.)"
                   aria-describedby="inputGroup-sizing-default"
                   style={{ resize: "none" }}
                   rows="3"
+                  maxLength="100"
                   value={task}
                   required
                   onChange={setTaskValue}

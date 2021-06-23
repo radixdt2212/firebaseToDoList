@@ -1,6 +1,6 @@
 import React from "react";
 import { Task } from "./Task";
-export const TaskList = ({ taskList, deleteElement }) => {
+export const TaskList = ({ taskList, deleteElement, dataLoading }) => {
   return (
     <>
       <div className="container-fluid">
@@ -10,18 +10,36 @@ export const TaskList = ({ taskList, deleteElement }) => {
         >
           <div className="row no-gutters justify-content-center">
             <div className="col-12">
-              <ol className="list-group list-group-numbered">
-                {taskList.map((item, index) => {
-                  return (
-                    <Task
-                      deleteElement={deleteElement}
-                      item={item}
-                      index={index}
-                      key={index}
-                    />
-                  );
-                })}
-              </ol>
+              {dataLoading ? (
+                <div className="row justify-content-center">
+                  <div className="col-12 col-lg-4 col-8 text-center">
+                    <div className="spinner-grow text-info" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div className="spinner-grow text-info" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <ol className="list-group list-group-numbered">
+                  {taskList.map((item, index) => {
+                    return (
+                      <Task
+                        deleteElement={deleteElement}
+                        item={item}
+                        index={index}
+                        key={index}
+                      />
+                    );
+                  })}
+                </ol>
+              )}
             </div>
           </div>
         </div>

@@ -8,8 +8,8 @@ export const Task = ({ item, index, deleteElement }) => {
         style={{ borderRadius: "9px" }}
       >
         <div className="ms-2 me-auto">
-          <div className="fw-bold">{item.title}</div>
-          <span className="badge bg-primary rounded-pill">{item.task}</span>
+          <div className="fw-bold text-wrap">{item.title}</div>
+          <span className="badge bg-primary cornered-pill text-wrap">{item.task}</span>
         </div>
 
         <button

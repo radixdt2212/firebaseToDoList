@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // *** Firebase setup ***
 import firebaseConfig from "./fireBaseSetup";
@@ -22,40 +22,51 @@ if (firebase.apps.length === 0) {
 }
 
 function App() {
-  const [task, setTask] = React.useState("");
-  const [title, setTitle] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
-
-  const [taskList, setTaskList] = React.useState([]);
-  const [dangerClassTitle, setDangerTitleClass] = React.useState(false);
-  const [dangerClassTask, setDangerTaskClass] = React.useState(false);
-  const [toastMsg, setToastMsg] = React.useState("");
-
+  // State Hooks
+  const [task, setTask] = useState("");
+  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [taskList, setTaskList] = useState([]);
+  const [dangerClassTitle, setDangerTitleClass] = useState(false);
+  const [dangerClassTask, setDangerTaskClass] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+  const [dataLoading, setDataLoading] = useState(true);
+  // FireBase Methods
   function addTodo(itemTitle, task) {
     if (itemTitle && task) {
-      setDangerTaskClass(false);
-      setDangerTitleClass(false);
-      setLoading(true);
-      firebase
-        .database()
-        .ref()
-        .once("value")
-        .then((snapshot) => {
-          let data = snapshot.val();
-          let value = {
-            title: itemTitle,
-            task,
-          };
-          if (data !== null)
-            if (data.hasOwnProperty("toDoList")) {
-              if (data.toDoList.task.length > 0) {
-                data.toDoList.task = [...data.toDoList.task, value];
-                firebaseSetValue(
-                  "toDoList",
-                  "task",
-                  data.toDoList.task,
-                  "Task created Successfully"
-                );
+      if (itemTitle.length < 51 && task.length < 101) {
+        setDangerTaskClass(false);
+        setDangerTitleClass(false);
+        setLoading(true);
+        firebase
+          .database()
+          .ref()
+          .once("value")
+          .then((snapshot) => {
+            let data = snapshot.val();
+            let value = {
+              title: itemTitle,
+              task,
+            };
+            if (data !== null)
+              if (data.hasOwnProperty("toDoList")) {
+                if (data.toDoList.task.length > 0) {
+                  data.toDoList.task = [...data.toDoList.task, value];
+                  firebaseSetValue(
+                    "toDoList",
+                    "task",
+                    data.toDoList.task,
+                    "Task created Successfully"
+                  );
+                } else {
+                  let data = [value];
+                  firebaseSetValue(
+                    "toDoList",
+                    "task",
+                    data,
+                    "Task created Successfully"
+                  );
+                }
               } else {
                 let data = [value];
                 firebaseSetValue(
@@ -65,7 +76,7 @@ function App() {
                   "Task created Successfully"
                 );
               }
-            } else {
+            else {
               let data = [value];
               firebaseSetValue(
                 "toDoList",
@@ -74,16 +85,13 @@ function App() {
                 "Task created Successfully"
               );
             }
-          else {
-            let data = [value];
-            firebaseSetValue(
-              "toDoList",
-              "task",
-              data,
-              "Task created Successfully"
-            );
-          }
-        });
+          });
+      } else {
+        if (!task) setDangerTaskClass(true);
+        else setDangerTaskClass(false);
+        if (!itemTitle) setDangerTitleClass(true);
+        else setDangerTitleClass(false);
+      }
     } else {
       if (!task) setDangerTaskClass(true);
       else setDangerTaskClass(false);
@@ -129,24 +137,30 @@ function App() {
         console.log("this is firebaseSetValue: " + error);
       });
   }
+
+  // Functional Methods
   function triggerToast(msg) {
     setToastMsg(msg);
     let x = new bootstrap.Toast(document.querySelector(".toast"));
     x.show();
   }
   function setTaskListData(ref) {
+    setDataLoading(true);
     firebase
       .database()
       .ref(ref)
       .once("value")
       .then((snapshot) => {
         let Data = snapshot.val();
+        setDataLoading(false);
         setTaskList(Data);
       })
       .catch((error) => {
         console.log(error);
       });
   }
+
+  // Event Methods
   function handleChange(e) {
     e.preventDefault();
     addTodo(title, task);
@@ -157,7 +171,6 @@ function App() {
   const setDataValue = (e) => {
     setTitle(e.target.value);
   };
-
   React.useEffect(() => {
     setTaskListData("toDoList/task");
   }, []);
@@ -176,7 +189,11 @@ function App() {
       />
       <Toasty msg={toastMsg} />
       {taskList ? (
-        <TaskList taskList={taskList} deleteElement={deleteElement} />
+        <TaskList
+          taskList={taskList}
+          deleteElement={deleteElement}
+          dataLoading={dataLoading}
+        />
       ) : (
         <ListIsEmpty />
       )}

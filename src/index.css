@@ -22,3 +22,10 @@ code {
 .relax {
   transition: all 0.2s linear;
 }
+
+.row {
+  margin: 0 !important;
+}
+.cornered-pill {
+  border-radius: 1rem !important;
+}

@@ -18,7 +18,7 @@ export const FormAdd = ({
             className=" card-body card-header my-5 mx-5"
             style={{ border: "none" }}
           >
-            <div className="row justify-content-center">
+            <div className="row no-gutters justify-content-center">
               <div className="col-4 col-offset-8 text-center">
                 <h3
                   className="btn btn-danger btn-lg w-100 card-body"
@@ -50,7 +50,8 @@ export const FormAdd = ({
                   placeholder="Task Description"
                   aria-describedby="inputGroup-sizing-default"
                   style={{ resize: "none" }}
-                  rows="3"
+                  row
+                  no-gutterss="3"
                   value={task}
                   required
                   onChange={setTaskValue}

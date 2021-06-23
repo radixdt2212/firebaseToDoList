@@ -1,6 +1,6 @@
 import React from "react";
-
-export const Task = ({ item }) => {
+import { TiDelete } from "react-icons/ti";
+export const Task = ({ item, index, deleteElement }) => {
   return (
     <>
       <li
@@ -11,6 +11,14 @@ export const Task = ({ item }) => {
           <div className="fw-bold">{item.title}</div>
           <span className="badge bg-primary rounded-pill">{item.task}</span>
         </div>
+
+        <button
+          type="button"
+          className="btn btn-circle btn-danger "
+          onClick={() => deleteElement(index)}
+        >
+          <TiDelete size={25} color={"#fff"} />
+        </button>
       </li>
     </>
   );

@@ -1,26 +1,34 @@
 import React from "react";
+
+// *** Firebase setup ***
 import firebaseConfig from "./fireBaseSetup";
 import firebase from "firebase/app";
 import "firebase/analytics";
 import "firebase/auth";
 import "firebase/database";
+
+// *** Bootstrap setup ***
 import bootstrap from "bootstrap/dist/js/bootstrap";
 
+// *** Components setup ***
 import { FormAdd } from "./components/FormAdd";
 import { TaskList } from "./components/TaskList";
+import { Toasty } from "./components/Toasty";
 
+// Initialize Firebase
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
 }
 
 function App() {
-  // Initialize Firebase
   const [task, setTask] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+
   const [taskList, setTaskList] = React.useState([]);
   const [dangerClassTitle, setDangerTitleClass] = React.useState(false);
   const [dangerClassTask, setDangerTaskClass] = React.useState(false);
+  const [toastMsg, setToastMsg] = React.useState("");
 
   function addTodo(itemTitle, task) {
     if (itemTitle && task) {
@@ -41,18 +49,38 @@ function App() {
             if (data.hasOwnProperty("toDoList")) {
               if (data.toDoList.task.length > 0) {
                 data.toDoList.task = [...data.toDoList.task, value];
-                firebaseSetValue("toDoList", "task", data.toDoList.task);
+                firebaseSetValue(
+                  "toDoList",
+                  "task",
+                  data.toDoList.task,
+                  "Task created Successfully"
+                );
               } else {
                 let data = [value];
-                firebaseSetValue("toDoList", "task", data);
+                firebaseSetValue(
+                  "toDoList",
+                  "task",
+                  data,
+                  "Task created Successfully"
+                );
               }
             } else {
               let data = [value];
-              firebaseSetValue("toDoList", "task", data);
+              firebaseSetValue(
+                "toDoList",
+                "task",
+                data,
+                "Task created Successfully"
+              );
             }
           else {
             let data = [value];
-            firebaseSetValue("toDoList", "task", data);
+            firebaseSetValue(
+              "toDoList",
+              "task",
+              data,
+              "Task created Successfully"
+            );
           }
         });
     } else {
@@ -62,8 +90,26 @@ function App() {
       else setDangerTitleClass(false);
     }
   }
-
-  function firebaseSetValue(ref, key, value) {
+  function deleteElement(ID) {
+    firebase
+      .database()
+      .ref("toDoList/task")
+      .once("value")
+      .then((snapshot) => {
+        let Data = snapshot.val();
+        Data.splice(ID, 1);
+        firebaseSetValue(
+          "toDoList",
+          "task",
+          Data,
+          `Task #${parseInt(ID + 1)} deleted Successfully`
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+  function firebaseSetValue(ref, key, value, msg) {
     firebase
       .database()
       .ref(ref)
@@ -75,13 +121,17 @@ function App() {
         setTitle("");
         setTaskListData(ref + "/" + key);
         setLoading(false);
-        let x = new bootstrap.Toast(document.querySelector(".toast"));
-        x.show();
+        triggerToast(msg);
       })
       .catch((error) => {
         setLoading(false);
         console.log("this is firebaseSetValue: " + error);
       });
+  }
+  function triggerToast(msg) {
+    setToastMsg(msg);
+    let x = new bootstrap.Toast(document.querySelector(".toast"));
+    x.show();
   }
   function setTaskListData(ref) {
     firebase
@@ -123,31 +173,8 @@ function App() {
         dangerClassTitle={dangerClassTitle}
         dangerClassTask={dangerClassTask}
       />
-      <div className="row justify-content-center">
-        <div className="col-4">&nbsp;</div>
-        <div className="col-4">
-          <div
-            className="toast align-items-center text-white bg-primary border-0 w-100"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            delay="100"
-            style={{ position: "relative" }}
-          >
-            <div className="d-flex text-center align-items-center w-100">
-              <div className="toast-body">Task Added successfully</div>
-              <button
-                type="button"
-                className="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
-            </div>
-          </div>
-        </div>
-        <div className="col-4">&nbsp;</div>
-      </div>
-      <TaskList taskList={taskList} />
+      <Toasty msg={toastMsg} />
+      <TaskList taskList={taskList} deleteElement={deleteElement} />
     </>
   );
 }
